@@ -2,18 +2,35 @@
 
 Link-expanding Telegram bot: give it one URL and it returns a handful of other sources covering the same story. It does not judge credibility or label anything as true/false – it simply widens your reading list.
 
-## Requirements
+## Quick start
+
+With the bot running, open its Telegram chat:
+
+1. Send `/links <url>`, or reply to a message containing a link with `/links`.
+2. Read the related coverage, short explanations, and insight bullets it returns.
+3. With no source link, use `/chishiki <summary>` to describe the story or scenario.
+
+Use `/help` for reminders. To host your own bot, follow [installation](#installation).
+
+## Installation
+
 * Python 3.10+
 * Telegram Bot token (`@BotFather`)
-* OpenAI API key (GPT-4o mini or better recommended)
+* OpenAI API key for the configured model
 
-Install dependencies (choose one):
+From the project checkout, create a Python environment:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+Then install dependencies (choose one):
 
 ```bash
 pip install -e .
 # or
 pip install -r requirements.txt
-./start_all
 ```
 
 Provide configuration through environment variables or a local `.env` file:
@@ -28,18 +45,26 @@ Provide configuration through environment variables or a local `.env` file:
 | `SUDOLINK_LOG_LEVEL` | Optional. Python logging level (default `INFO`). |
 | `SUDOLINK_USER_AGENT` | Optional. Override the browser User-Agent string used to download the original article (defaults to a recent Chrome build because some publishers block obvious bots). |
 
-## Architecture
-`docs/plan.md` dives into the full roadmap. At a high level:
+After setting the required variables, start the bot from the repository root:
 
-1. `/links` and DM handlers collect a URL from a message or command argument.
-2. `/chishiki` (“knowledge”) accepts plain-text summaries when no URL is available.
-2. `MetaFetcher` loads the source page to capture title/description/keywords.
-3. `AIExpansionService` feeds that context to OpenAI, which returns related links plus short “why read this” blurbs and broader insights. `ResultCurator` keeps the list diverse and deduped.
-4. Responses are rendered for Telegram with both the curated links and the extra “insights” section so readers know how the conversation around the story is evolving.
+```bash
+./start_all
+```
 
 ## Commands at a glance
+
 | Command | Purpose |
 |---------|---------|
 | `/links <url>` | Reply to or paste a link; SudoLink fetches more coverage of that exact story. |
 | `/chishiki <summary>` | Share plain-text context (or reply to a message with `/chishiki`) when no link exists; SudoLink interprets the scenario and surfaces relevant reporting. |
 | `/start`, `/help` | Usage instructions plus privacy stance (no background monitoring, no chatter logging). |
+
+## Architecture
+
+`docs/plan.md` dives into the full roadmap. At a high level:
+
+1. `/links` and DM handlers collect a URL from a message or command argument.
+2. `/chishiki` (“knowledge”) accepts plain-text summaries when no URL is available.
+3. `MetaFetcher` loads the source page to capture title/description/keywords.
+4. `AIExpansionService` feeds that context to OpenAI, which returns related links plus short “why read this” blurbs and broader insights. `ResultCurator` keeps the list diverse and deduped.
+5. Responses are rendered for Telegram with both the curated links and the extra “insights” section so readers know how the conversation around the story is evolving.
