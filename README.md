@@ -1,5 +1,7 @@
 # SudoLink
 
+<img src="docs/images/sudolink.webp" alt="SudoLink logo with a samurai silhouette" width="200">
+
 Link-expanding Telegram bot: give it one URL and it returns a handful of other sources covering the same story. It does not judge credibility or label anything as true/false – it simply widens your reading list.
 
 ## Quick start
